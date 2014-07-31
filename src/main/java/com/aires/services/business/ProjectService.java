@@ -18,4 +18,6 @@ public interface ProjectService {
 	public List<Projects> getProjectsForUser(int userId);
 	
 	public List<ProjectDetails> getProjectDetailsForUser(int userId);
+	
+	public void updateProject(ProjectDetails project);
 }

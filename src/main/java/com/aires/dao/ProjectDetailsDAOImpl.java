@@ -7,6 +7,7 @@ import java.util.Set;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +31,11 @@ public class ProjectDetailsDAOImpl implements ProjectDetailsDAO {
 	 
 	@Override
 	public void addProject(Projects project) {
+		
+		Transaction tx = sessionFactory.getCurrentSession().beginTransaction();
 		sessionFactory.getCurrentSession().saveOrUpdate(project);
+		tx.commit();
+		System.out.println("Commited");
 	}
 
 	@SuppressWarnings("unchecked")

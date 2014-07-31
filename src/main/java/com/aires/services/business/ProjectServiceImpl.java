@@ -17,12 +17,14 @@ import com.aires.db.model.Clients;
 import com.aires.db.model.Contacts;
 import com.aires.db.model.LabReportRecipients;
 import com.aires.db.model.Labs;
+import com.aires.db.model.Project;
 import com.aires.db.model.Projects;
 import com.aires.db.model.SampleChemicals;
 import com.aires.db.model.SamplePpe;
 import com.aires.db.model.Samples;
 import com.aires.db.model.TurnaroundTimes;
 import com.aires.db.model.Users;
+import com.aires.exceptions.ProjectNotFoundException;
 import com.aires.view.model.ClientsViewModel;
 import com.aires.view.model.ContactsViewModel;
 import com.aires.view.model.LabReportRecipientsViewModel;
@@ -33,7 +35,7 @@ import com.aires.view.model.SamplePpeViewModel;
 import com.aires.view.model.SamplesViewModel;
 
 @Service("projectService")
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(propagation = Propagation.SUPPORTS)
 public class ProjectServiceImpl implements ProjectService {
 
 	 @Autowired
@@ -275,5 +277,33 @@ public class ProjectServiceImpl implements ProjectService {
 		projViewModel.setDateOnsite(project.getDateOnsite());
 		
 		projViewModel.setQcperson(project.getQcperson());
+	}
+
+	@Override
+	public void updateProject(ProjectDetails project) {
+		Projects projects = projectDao.getProject(project.getProjectId());
+		
+		if(null == projects)
+			throw new ProjectNotFoundException("No project Found");
+		
+		//update the projects object with the new values 
+		projects.setProjectDescription(project.getProjectDescription());
+		projects.setProjectNumber(project.getProjectNumber());
+		
+		projects.setLocationAddress(project.getLocationAddress());
+		projects.setLocationAddress2(project.getLocationAddress2());
+		projects.setLocationCity(project.getLocationCity());
+		projects.setLocationPostalCode(project.getLocationPostalCode());
+		projects.setLocationState(project.getLocationState());
+		
+		projects.setCreatedBy(project.getCreatedBy());
+		projects.setCreatedOn(project.getCreatedOn());
+		
+		projects.setDateOnsite(project.getDateOnsite());
+		projects.setQcperson(project.getQcperson());
+		projects.setCompletedFlag(project.isCompletedFlag());
+		
+		//update in db
+		projectDao.addProject(projects);
 	}
 }

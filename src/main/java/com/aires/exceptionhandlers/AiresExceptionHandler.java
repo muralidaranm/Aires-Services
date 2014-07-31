@@ -10,6 +10,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.aires.exceptions.InvalidRequestException;
+import com.aires.exceptions.ProjectNotFoundException;
 
 @ControllerAdvice
 public class AiresExceptionHandler extends ResponseEntityExceptionHandler {
@@ -26,4 +27,11 @@ public class AiresExceptionHandler extends ResponseEntityExceptionHandler {
 	        return handleExceptionInternal(ire, error, headers, HttpStatus.UNPROCESSABLE_ENTITY, request);
 	 }
 
+	 @ExceptionHandler({ ProjectNotFoundException.class })
+	 protected ResponseEntity<Object> projectNotFound( RuntimeException e , WebRequest request){
+		 ProjectNotFoundException pnfe = (ProjectNotFoundException) e;
+		 ErrorResource error = new ErrorResource("Invalid Parameters/Fields", "There is no Project with the given project Id.");
+		 HttpHeaders headers = new HttpHeaders();
+		 return handleExceptionInternal(pnfe, error, headers, HttpStatus.NOT_FOUND, request);
+	 }
 }
