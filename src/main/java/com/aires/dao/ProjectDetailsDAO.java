@@ -2,13 +2,16 @@ package com.aires.dao;
 
 import java.util.List;
 
-import com.aires.model.Clients;
-import com.aires.model.Contacts;
-import com.aires.model.LabReportRecipients;
-import com.aires.model.Labs;
-import com.aires.model.Projects;
-import com.aires.model.TurnaroundTimes;
-import com.aires.model.Users;
+import com.aires.db.model.Clients;
+import com.aires.db.model.Contacts;
+import com.aires.db.model.LabReportRecipients;
+import com.aires.db.model.Labs;
+import com.aires.db.model.Projects;
+import com.aires.db.model.SampleChemicals;
+import com.aires.db.model.SamplePpe;
+import com.aires.db.model.Samples;
+import com.aires.db.model.TurnaroundTimes;
+import com.aires.db.model.Users;
 
 public interface ProjectDetailsDAO {
 
@@ -22,16 +25,22 @@ public interface ProjectDetailsDAO {
 	
 	public Projects getProjectDetails(int projectId);
 	
-	public List<Contacts> getContactsForProject(int projectId);
+	public Contacts getContactsForProject(int projectId);
 	
-	public List<Clients> getClientsForProject(int projectId);
+	public Clients getClientsForProject(int projectId);
 	
-	public List<Users> getUsersForProject(int projectId);
+	public Users getUsersForProject(int projectId);
 	
-	public List<Labs> getLabsForProject(int projectId);
+	public Labs getLabsForProject(int projectId);
 	
-	public List<TurnaroundTimes> getTurnaroundTimesForProject(int projectId);
+	public TurnaroundTimes getTurnaroundTimesForProject(int projectId);
 	
 	public List<LabReportRecipients> getLabReportRecipients(int labId);
+	
+	public List<Samples> getSamplesForProject(int projectId);
+	
+	public List<SampleChemicals> getSampleChemicalsForProject(int sampleId);
+	
+	public List<SamplePpe> getSamplePpeForProject(int sampleId);
 	
 }

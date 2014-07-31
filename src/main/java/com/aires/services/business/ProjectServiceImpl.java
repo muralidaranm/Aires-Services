@@ -1,5 +1,6 @@
 package com.aires.services.business;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,13 +13,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.aires.dao.ProjectDetailsDAO;
 import com.aires.dao.UserProjectDAO;
-import com.aires.model.Clients;
-import com.aires.model.Contacts;
-import com.aires.model.LabReportRecipients;
-import com.aires.model.Labs;
-import com.aires.model.Projects;
-import com.aires.model.TurnaroundTimes;
-import com.aires.model.Users;
+import com.aires.db.model.Clients;
+import com.aires.db.model.Contacts;
+import com.aires.db.model.LabReportRecipients;
+import com.aires.db.model.Labs;
+import com.aires.db.model.Projects;
+import com.aires.db.model.SampleChemicals;
+import com.aires.db.model.SamplePpe;
+import com.aires.db.model.Samples;
+import com.aires.db.model.TurnaroundTimes;
+import com.aires.db.model.Users;
+import com.aires.view.model.ClientsViewModel;
+import com.aires.view.model.ContactsViewModel;
+import com.aires.view.model.LabReportRecipientsViewModel;
+import com.aires.view.model.LabsViewModel;
+import com.aires.view.model.ProjectDetails;
+import com.aires.view.model.SampleChemicalsViewModel;
+import com.aires.view.model.SamplePpeViewModel;
+import com.aires.view.model.SamplesViewModel;
 
 @Service("projectService")
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -58,34 +70,210 @@ public class ProjectServiceImpl implements ProjectService {
 		return userProjectDAO.getProjectsForUser(userId);
 	}
 
-	public List<Projects> getProjectDetailsForUser(int userId){
+	public List<ProjectDetails> getProjectDetailsForUser(int userId){
 		List<Projects> projects = getProjectsForUser(userId);
 		
-		List<Projects> projectDetails = new LinkedList<Projects>();
+		List<ProjectDetails> projectDetails = new LinkedList<ProjectDetails>();
 		for( Projects project : projects ){
 			int projectId = project.getProjectId();
-			List<Contacts> contacts =projectDao.getContactsForProject(projectId);
-			if(contacts.size() == 1) project.setContacts(contacts.get(0));
+			ProjectDetails projViewModel = new ProjectDetails();
+			mapProjectPropertiesForProjectDetails(project , projViewModel );
 			
-			List<Clients> clients = projectDao.getClientsForProject(projectId);
-			if(clients.size() == 1) project.setClients(clients.get(0));
+			Contacts contacts = projectDao.getContactsForProject(projectId);
+			mapContactPropertiesForProjectDetails(contacts , projViewModel);
 			
-			List<Users> users = projectDao.getUsersForProject(projectId);
-			if(users.size() == 1) project.setUsers(users.get(0));
+			Clients clients = projectDao.getClientsForProject(projectId);
+			mapClientPropertiesForProjectDetails( clients, projViewModel);
 			
-			List<TurnaroundTimes> turnaroundTimes = projectDao.getTurnaroundTimesForProject(projectId);
-			if(turnaroundTimes.size() == 1) project.setTurnaroundTimes(turnaroundTimes.get(0));
+			Users users = projectDao.getUsersForProject(projectId);
+			projViewModel.setConsultant(users.getFirstName() +" "+users.getLastName());
 			
-			List<Labs> labs = projectDao.getLabsForProject(projectId);
-			if(labs.size() == 1) project.setLabs(labs.get(0));
+			TurnaroundTimes turnaroundTimes = projectDao.getTurnaroundTimesForProject(projectId);
+			projViewModel.setTurnaroundTime(turnaroundTimes.getTurnaroundTime());
+			
+			Labs labs = projectDao.getLabsForProject(projectId);
+			mapLabPropertiesForProjectDetails(labs, projViewModel);
+			
 			
 			List<LabReportRecipients> labReportRecipients = projectDao.getLabReportRecipients(project.getLabs().getLabId());
-			Set<LabReportRecipients> labReportRecipientsSet = new HashSet<LabReportRecipients>();
-		    labReportRecipientsSet.addAll(labReportRecipients);
-		    project.getLabs().setLabReportRecipientses(labReportRecipientsSet);
-			//projectDetails.add(projectDao.getProjectDetails(project.getProjectId()));
+			mapLabExtraProperties(labReportRecipients,projViewModel);
+			
+
+			List<Samples> samples = projectDao.getSamplesForProject(projectId);
+			mapSamplesForProjectDetails(samples , projViewModel);
+			
+			
+			projectDetails.add(projViewModel);
+			
+		
 		}
 		
-		return projects;
+		return projectDetails;
+	}
+
+
+	private void mapSamplesForProjectDetails(List<Samples> samples,
+			ProjectDetails projViewModel) {
+		
+		Set<SamplesViewModel> samplesViewModelSet = new HashSet<SamplesViewModel>();
+		for(Samples sample : samples){
+			SamplesViewModel sampleViewModel = new SamplesViewModel();
+			
+			sampleViewModel.setArea(sample.getArea());
+			sampleViewModel.setComments(sample.getComments());
+			sampleViewModel.setCreatedOn(sample.getCreatedOn());
+//			sampleViewModel.setDeviceTypes(sample.getDeviceTypes());
+			sampleViewModel.setEmployeeJob(sample.getEmployeeJob());
+			sampleViewModel.setEmployeeName(sample.getEmployeeName());
+			sampleViewModel.setMinutes(sample.getMinutes());
+			sampleViewModel.setNotes(sample.getNotes());
+			sampleViewModel.setOperationArea(sample.getOperationArea());
+			sampleViewModel.setPpeid(sample.getPpeid());
+//			sampleViewModel.setProjectId(sample.getProjects());
+			sampleViewModel.setSampleId(sample.getSampleId());
+			sampleViewModel.setSampleNumber(sample.getSampleNumber());
+			
+			
+			//Add sampleChemicals to samples	
+			List<SampleChemicals> sampleChemicals = projectDao.getSampleChemicalsForProject(sample.getSampleId());
+			mapSampleChemicalsForProjectDetails(sampleChemicals, sampleViewModel);
+			
+			//Add samplePpe to samples
+			List<SamplePpe> samplePpe = projectDao.getSamplePpeForProject(sample.getSampleId());
+			mapSamplePpeForProjectDetails(samplePpe, sampleViewModel);
+			
+			samplesViewModelSet.add(sampleViewModel);
+		}
+		
+		projViewModel.setSampleses(samplesViewModelSet);
+		
+	}
+
+	private void mapSampleChemicalsForProjectDetails(
+			List<SampleChemicals> sampleChemicals, SamplesViewModel sampleViewModel) {
+		Set<SampleChemicalsViewModel> sampleChemicalViewModel = new HashSet<SampleChemicalsViewModel>();
+		
+		for(SampleChemicals sampleChem : sampleChemicals){
+			SampleChemicalsViewModel sampleChemicalsVM = new SampleChemicalsViewModel();
+			sampleChemicalsVM.setChemicalId(sampleChem.getSampleChemicalId());
+			sampleChemicalsVM.setDeleted(sampleChem.getDeleted());
+			sampleChemicalsVM.setPelcflag(sampleChem.getPelcflag());
+			sampleChemicalsVM.setPelstelflag(sampleChem.getPelstelflag());
+			sampleChemicalsVM.setPeltwaflag(sampleChem.getPeltwaflag());
+			sampleChemicalsVM.setSampleChemicalId(sampleChem.getSampleChemicalId());
+			sampleChemicalsVM.setSampleId(sampleChem.getSamples().getSampleId());
+			sampleChemicalsVM.setTlvcflag(sampleChem.getTlvcflag());
+			sampleChemicalsVM.setTlvstelflag(sampleChem.getTlvstelflag());
+			sampleChemicalsVM.setTlvtwaflag(sampleChem.getTlvtwaflag());
+			
+			sampleChemicalViewModel.add(sampleChemicalsVM);
+		}
+		
+		sampleViewModel.setSampleChemicals(sampleChemicalViewModel);
+	}
+
+	
+	private void mapSamplePpeForProjectDetails(List<SamplePpe> samplePpes,
+			SamplesViewModel sampleViewModel) {
+		Set<SamplePpeViewModel> samplePpeViewModelSet = new HashSet<SamplePpeViewModel>();
+		
+		for(SamplePpe samplePpe : samplePpes){
+			SamplePpeViewModel samplePpeVM = new SamplePpeViewModel();
+			samplePpeVM.setDeleted(samplePpe.getDeleted());
+			samplePpeVM.setPpe(samplePpe.getPpe().getProtectionEquipmentName());
+			samplePpeVM.setSamplePpeid(samplePpe.getSamplePpeid());
+			//TODO
+			//samplePpeVM.setSamples(samplePpe.getSamples());
+			
+			samplePpeViewModelSet.add(samplePpeVM);
+		}
+		sampleViewModel.setSamplePpes(samplePpeViewModelSet);
+	}
+
+	private void mapLabExtraProperties(
+			List<LabReportRecipients> labReportRecipients,
+			ProjectDetails projViewModel) {
+
+		Set<LabReportRecipientsViewModel> labRRSet = new HashSet<LabReportRecipientsViewModel>();
+		for(LabReportRecipients labRR : labReportRecipients){
+			LabReportRecipientsViewModel labRRViewModel = new LabReportRecipientsViewModel();
+			labRRViewModel.setLabReportRecipientId(labRR.getLabReportRecipientId());
+//			labRRViewModel.setLabId(labRR.getLabs().getLabId());
+			labRRViewModel.setFirstName(labRR.getFirstName());
+			labRRViewModel.setLastName(labRR.getLastName());
+			labRRViewModel.setEmail(labRR.getEmail());
+			
+			labRRSet.add(labRRViewModel);
+		}
+		
+		projViewModel.getLab().setLabReportRecipientses(labRRSet);
+		
+	}
+
+	private void mapLabPropertiesForProjectDetails(Labs labs,
+			ProjectDetails projViewModel) {
+		
+		LabsViewModel labsViewModel = new LabsViewModel();
+		labsViewModel.setLabId(labs.getLabId());
+		labsViewModel.setLabName(labs.getLabName());
+		labsViewModel.setLabEmail(labs.getLabEmail());
+		labsViewModel.setCreatedOn(labs.getCreatedOn());
+		
+		projViewModel.setLab(labsViewModel);
+		
+	}
+
+	private void mapClientPropertiesForProjectDetails(Clients clients,
+			ProjectDetails projViewModel) {
+	
+		ClientsViewModel clientViewModel = new ClientsViewModel();
+		clientViewModel.setClientId(clients.getClientId());
+		clientViewModel.setClientName(clients.getClientName());
+		clientViewModel.setClientCity(clients.getClientCity());
+		clientViewModel.setClientState(clients.getClientState());
+		clientViewModel.setCreatedOn(clients.getCreatedOn());
+		
+		projViewModel.setClients(clientViewModel);
+		
+	}
+
+	private void mapContactPropertiesForProjectDetails(Contacts contacts,
+			ProjectDetails projViewModel) {
+		
+		ContactsViewModel contactsViewModel = new ContactsViewModel();
+		
+		contactsViewModel.setContactId(contacts.getContactId());
+		contactsViewModel.setFirstName(contacts.getFirstName());
+		contactsViewModel.setLastName(contacts.getLastName());
+		contactsViewModel.setPhoneNumber(contacts.getPhoneNumber());
+		contactsViewModel.setMobileNumber(contacts.getMobileNumber());
+		contactsViewModel.setEmail(contacts.getEmail());
+		contactsViewModel.setCreatedOn(contacts.getCreatedOn());
+		
+		projViewModel.setContact(contactsViewModel);
+				
+	}
+
+	private void mapProjectPropertiesForProjectDetails(Projects project,
+			ProjectDetails projViewModel) {
+
+		projViewModel.setProjectId(project.getProjectId());
+		projViewModel.setProjectDescription(project.getProjectDescription());
+		projViewModel.setProjectNumber(project.getProjectNumber());
+		
+		projViewModel.setLocationAddress(project.getLocationAddress());
+		projViewModel.setLocationAddress2(project.getLocationAddress2());
+		projViewModel.setLocationCity(project.getLocationCity());
+		projViewModel.setLocationState(project.getLocationState());
+		projViewModel.setLocationPostalCode(project.getLocationPostalCode());
+		
+		projViewModel.setCompletedFlag(project.isCompletedFlag());
+		
+		projViewModel.setCreatedBy(project.getCreatedBy());
+		projViewModel.setCreatedOn(project.getCreatedOn());
+		
+		projViewModel.setDateOnsite(project.getDateOnsite());
+		
+		projViewModel.setQcperson(project.getQcperson());
 	}
 }

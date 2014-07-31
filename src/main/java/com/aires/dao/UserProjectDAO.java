@@ -2,7 +2,7 @@ package com.aires.dao;
 
 import java.util.List;
 
-import com.aires.model.Projects;
+import com.aires.db.model.Projects;
 
 public interface UserProjectDAO {
 

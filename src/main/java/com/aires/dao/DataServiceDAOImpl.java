@@ -6,10 +6,10 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.aires.model.Chemicals;
-import com.aires.model.DeviceTypes;
-import com.aires.model.Ppe;
-import com.aires.model.SampleTypes;
+import com.aires.db.model.Chemicals;
+import com.aires.db.model.DeviceTypes;
+import com.aires.db.model.Ppe;
+import com.aires.db.model.SampleTypes;
 
 @Repository("dataDao")
 public class DataServiceDAOImpl implements DataServiceDAO{

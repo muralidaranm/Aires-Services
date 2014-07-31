@@ -10,13 +10,16 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.aires.model.Clients;
-import com.aires.model.Contacts;
-import com.aires.model.LabReportRecipients;
-import com.aires.model.Labs;
-import com.aires.model.Projects;
-import com.aires.model.TurnaroundTimes;
-import com.aires.model.Users;
+import com.aires.db.model.Clients;
+import com.aires.db.model.Contacts;
+import com.aires.db.model.LabReportRecipients;
+import com.aires.db.model.Labs;
+import com.aires.db.model.Projects;
+import com.aires.db.model.SampleChemicals;
+import com.aires.db.model.SamplePpe;
+import com.aires.db.model.Samples;
+import com.aires.db.model.TurnaroundTimes;
+import com.aires.db.model.Users;
 
 @Repository("projectDao")
 public class ProjectDetailsDAOImpl implements ProjectDetailsDAO {
@@ -72,39 +75,39 @@ public class ProjectDetailsDAOImpl implements ProjectDetailsDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Contacts> getContactsForProject(int projectId) {
+	public Contacts getContactsForProject(int projectId) {
 		Query q = sessionFactory.getCurrentSession().createQuery("Select p.contacts from Projects p where p.projectId="+projectId);
-		List<Contacts> contacts = q.list();
+		Contacts contacts = (Contacts) q.uniqueResult();
 		return contacts;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Clients> getClientsForProject(int projectId) {
+	public Clients getClientsForProject(int projectId) {
 		Query q = sessionFactory.getCurrentSession().createQuery("Select p.clients from Projects p where p.projectId="+projectId);
-		return q.list();
+		return (Clients)q.uniqueResult();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Users> getUsersForProject(int projectId) {
+	public Users getUsersForProject(int projectId) {
 		Query q = sessionFactory.getCurrentSession().createQuery("Select p.users from Projects p where p.projectId="+projectId);
-		return q.list();
+		return (Users)q.uniqueResult();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Labs> getLabsForProject(int projectId) {
+	public Labs getLabsForProject(int projectId) {
 		Query q = sessionFactory.getCurrentSession().createQuery("Select p.labs from Projects p where p.projectId="+projectId);
-		return q.list();
+		return (Labs)q.uniqueResult();
 	}
 
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<TurnaroundTimes> getTurnaroundTimesForProject(int projectId) {
+	public TurnaroundTimes getTurnaroundTimesForProject(int projectId) {
 		Query q = sessionFactory.getCurrentSession().createQuery("Select p.turnaroundTimes from Projects p where p.projectId="+projectId);
-		return q.list();
+		return (TurnaroundTimes)q.uniqueResult();
 	}
 	@SuppressWarnings("unchecked")
 	@Override
@@ -112,6 +115,27 @@ public class ProjectDetailsDAOImpl implements ProjectDetailsDAO {
 	
 		List<LabReportRecipients> labReportRecipients = sessionFactory.getCurrentSession().createQuery("select l.labReportRecipientses from Labs l where l.labId="+labId ).list();
 		return labReportRecipients;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Samples> getSamplesForProject(int projectId) {
+		List<Samples> samples = sessionFactory.getCurrentSession().createQuery("select p.sampleses from Projects p where p.projectId="+projectId).list();
+		return samples;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SampleChemicals> getSampleChemicalsForProject(int sampleId) {
+		List<SampleChemicals> sampleChemicals = sessionFactory.getCurrentSession().createQuery("select s.sampleChemicalses from Samples s where s.sampleId="+sampleId).list();
+		return sampleChemicals;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SamplePpe> getSamplePpeForProject(int sampleId) {
+		List<SamplePpe> samplePpes = sessionFactory.getCurrentSession().createQuery("select s.samplePpes from Samples s where s.sampleId="+sampleId).list();
+		return samplePpes;
 	}
 
 }

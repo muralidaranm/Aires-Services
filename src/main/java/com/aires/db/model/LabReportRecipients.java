@@ -1,4 +1,4 @@
-package com.aires.model;
+package com.aires.db.model;
 
 // Generated Jul 23, 2014 1:40:15 PM by Hibernate Tools 3.4.0.CR1
 

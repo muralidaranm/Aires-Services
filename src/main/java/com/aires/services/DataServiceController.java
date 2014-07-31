@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.aires.model.Chemicals;
-import com.aires.model.DeviceTypes;
-import com.aires.model.Ppe;
-import com.aires.model.SampleTypes;
+import com.aires.db.model.Chemicals;
+import com.aires.db.model.DeviceTypes;
+import com.aires.db.model.Ppe;
+import com.aires.db.model.SampleTypes;
 import com.aires.services.data.DataService;
 
 @Controller

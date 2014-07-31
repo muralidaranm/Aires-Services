@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.aires.dao.DataServiceDAO;
-import com.aires.model.Chemicals;
-import com.aires.model.DeviceTypes;
-import com.aires.model.Ppe;
-import com.aires.model.SampleTypes;
+import com.aires.db.model.Chemicals;
+import com.aires.db.model.DeviceTypes;
+import com.aires.db.model.Ppe;
+import com.aires.db.model.SampleTypes;
 
 @Service("dataService")
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

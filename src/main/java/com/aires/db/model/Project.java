@@ -1,4 +1,4 @@
-package com.aires.model;
+package com.aires.db.model;
 
 import java.util.Date;
 

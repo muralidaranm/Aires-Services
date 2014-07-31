@@ -58,26 +58,26 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="annotatedClasses">
 			<list>
-				<beans:value>com.aires.model.Certifications</beans:value>
-				<beans:value>com.aires.model.Chemicals</beans:value>
-				<beans:value>com.aires.model.Clients</beans:value>
-				<beans:value>com.aires.model.Contacts</beans:value>
-				<beans:value>com.aires.model.DeviceTypes</beans:value>
-				<beans:value>com.aires.model.LabReportRecipients</beans:value>
-				<beans:value>com.aires.model.Labs</beans:value>
-				<beans:value>com.aires.model.Measurements</beans:value>
-				<beans:value>com.aires.model.Ppe</beans:value>
-				<beans:value>com.aires.model.Projects</beans:value>
-				<beans:value>com.aires.model.Results</beans:value>
-				<beans:value>com.aires.model.SampleChemicals</beans:value>
-				<beans:value>com.aires.model.SamplePpe</beans:value>
-				<beans:value>com.aires.model.Samples</beans:value>
-				<beans:value>com.aires.model.SampleTypes</beans:value>
-				<beans:value>com.aires.model.TurnaroundTimes</beans:value>
-				<beans:value>com.aires.model.Units</beans:value>
-				<beans:value>com.aires.model.UserLogin</beans:value>
-				<beans:value>com.aires.model.UserProjects</beans:value>
-				<beans:value>com.aires.model.Users</beans:value>
+				<beans:value>com.aires.db.model.Certifications</beans:value>
+				<beans:value>com.aires.db.model.Chemicals</beans:value>
+				<beans:value>com.aires.db.model.Clients</beans:value>
+				<beans:value>com.aires.db.model.Contacts</beans:value>
+				<beans:value>com.aires.db.model.DeviceTypes</beans:value>
+				<beans:value>com.aires.db.model.LabReportRecipients</beans:value>
+				<beans:value>com.aires.db.model.Labs</beans:value>
+				<beans:value>com.aires.db.model.Measurements</beans:value>
+				<beans:value>com.aires.db.model.Ppe</beans:value>
+				<beans:value>com.aires.db.model.Projects</beans:value>
+				<beans:value>com.aires.db.model.Results</beans:value>
+				<beans:value>com.aires.db.model.SampleChemicals</beans:value>
+				<beans:value>com.aires.db.model.SamplePpe</beans:value>
+				<beans:value>com.aires.db.model.Samples</beans:value>
+				<beans:value>com.aires.db.model.SampleTypes</beans:value>
+				<beans:value>com.aires.db.model.TurnaroundTimes</beans:value>
+				<beans:value>com.aires.db.model.Units</beans:value>
+				<beans:value>com.aires.db.model.UserLogin</beans:value>
+				<beans:value>com.aires.db.model.UserProjects</beans:value>
+				<beans:value>com.aires.db.model.Users</beans:value>
 			</list>
 		</property>
 		<property name="hibernateProperties">

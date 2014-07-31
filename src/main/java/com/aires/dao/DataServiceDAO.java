@@ -2,10 +2,10 @@ package com.aires.dao;
 
 import java.util.List;
 
-import com.aires.model.Chemicals;
-import com.aires.model.DeviceTypes;
-import com.aires.model.Ppe;
-import com.aires.model.SampleTypes;
+import com.aires.db.model.Chemicals;
+import com.aires.db.model.DeviceTypes;
+import com.aires.db.model.Ppe;
+import com.aires.db.model.SampleTypes;
 
 public interface DataServiceDAO {
 

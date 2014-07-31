@@ -2,7 +2,8 @@ package com.aires.services.business;
 
 import java.util.List;
 
-import com.aires.model.Projects;
+import com.aires.db.model.Projects;
+import com.aires.view.model.ProjectDetails;
 
 public interface ProjectService {
 
@@ -16,5 +17,5 @@ public interface ProjectService {
 	
 	public List<Projects> getProjectsForUser(int userId);
 	
-	public List<Projects> getProjectDetailsForUser(int userId);
+	public List<ProjectDetails> getProjectDetailsForUser(int userId);
 }

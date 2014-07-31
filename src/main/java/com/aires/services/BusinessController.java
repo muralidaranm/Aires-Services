@@ -10,10 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.aires.json.ResponseWrapper;
-import com.aires.json.ResponseWrapper.Status;
-import com.aires.model.Projects;
 import com.aires.services.business.ProjectService;
+import com.aires.view.model.ProjectDetails;
 
 @Controller
 public class BusinessController {
@@ -23,19 +21,13 @@ public class BusinessController {
 	private ProjectService projectService;
 	
 	@RequestMapping(value = "/projects", method = RequestMethod.GET)
-	public @ResponseBody List<Projects> getProjects(){
+	public @ResponseBody List<ProjectDetails> getProjects(){
 		
-		List<Projects> projectIds = projectService.getProjectDetailsForUser(7);
-		ResponseWrapper responseWrapper = new ResponseWrapper();
-		responseWrapper.setResponseContent(projectIds);
-		responseWrapper.setMessage(Status.SUCCESS);
+		List<ProjectDetails> projectIds = projectService.getProjectDetailsForUser(7);
 		
-/*		Projects project  = projectService.getProject(1);
-		project.getClients();
-		project.getContacts();
-		project.getUsers();
-		project.getLabs();
-		System.out.println(project.getProjectDescription());*/
+		/*if(true)
+			throw new InvalidRequestException("Invalid Request");*/
+
 		return projectIds;
 	}
 }
